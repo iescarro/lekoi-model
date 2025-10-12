@@ -5,6 +5,8 @@ namespace Lekoi;
 class MySQLDatabase implements IDatabase
 {
     protected $conn;
+    private $stmt;
+    private $result;
 
     public function __construct($host, $user, $pass, $dbname)
     {
@@ -60,46 +62,69 @@ class MySQLDatabase implements IDatabase
 
     public function get(string $table_name, ?array $where_clause = null): IDatabase
     {
-        $sql = "SELECT * FROM `$table_name`";
+        $sql = "SELECT * FROM `{$table_name}`";
         $params = [];
         $types = '';
 
         if (!empty($where_clause)) {
             $conditions = [];
             foreach ($where_clause as $column => $value) {
-                // Prepare the WHERE clause structure: `column` = ?
                 $conditions[] = "`{$column}` = ?";
                 $params[] = $value;
-                $types .= 's'; // Assume string type for binding
+                // Detect type automatically
+                $types .= is_int($value) ? 'i' : (is_float($value) ? 'd' : 's');
             }
             $sql .= " WHERE " . implode(' AND ', $conditions);
         }
 
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
-            // Handle error if preparation fails (e.g., invalid table name)
-            throw new \Exception("SQL Prepare Error: " . $this->conn->error);
+            throw new \Exception("MySQL prepare error: " . $this->conn->error);
         }
 
         if (!empty($params)) {
-            // Note: PHP's mysqli::bind_param requires parameters to be passed by reference.
-            // However, using the spread operator with bind_param handles this in modern PHP.
-            $stmt->bind_param($types, ...$params);
+            // MySQLi requires bind_param arguments by reference
+            $refs = [];
+            foreach ($params as $key => $value) {
+                $refs[$key] = &$params[$key];
+            }
+            array_unshift($refs, $types);
+            call_user_func_array([$stmt, 'bind_param'], $refs);
         }
 
-        $stmt->execute();
-
-        $result = $stmt->get_result();
-        $data = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
+        if (!$stmt->execute()) {
+            throw new \Exception("MySQL execute error: " . $stmt->error);
         }
 
-        $stmt->close();
+        $this->result = $stmt->get_result();
+        $this->stmt = $stmt;
 
-        // return $data;
         return $this;
+    }
+
+    public function result(): array
+    {
+        $data = [];
+        if (!$this->result) {
+            return $data;
+        }
+        while ($row = $this->result->fetch_assoc()) {
+            $data[] = (object)$row;
+        }
+        $this->stmt->close();
+        return $data;
+    }
+
+    public function row_array(): array
+    {
+        $data = [];
+        if ($this->result) {
+            if ($row = $this->result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+        $this->stmt->close();
+        return $data;
     }
 
     public function row(): object
