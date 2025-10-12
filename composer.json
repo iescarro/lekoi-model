@@ -21,7 +21,8 @@
   "autoload": {
     "psr-4": {
       "Lekoi\\": [
-        "src/"
+        "src/",
+        "src/database/"
       ]
     }
   },
