@@ -1,5 +1,9 @@
 # 🧩 lekoi-model
 
+<p align="center">
+<img src="art/logo.png" alt="Lekoi Framework Logo" width="250"/>
+</p>
+
 A lightweight database abstraction / ORM-like model component for the Lekoi PHP framework.  
 Supports **MySQL (mysqli)** and **SQLite3** through a consistent interface, and provides a simple **DB facade** and base **Model** capabilities.
 
@@ -172,11 +176,11 @@ composer test
 
 ## ⚙️ Configuration & Best Practices
 
-* Validate table & column names (e.g. alphanumeric + underscores) to avoid SQL injection risks.
-* Use environment variables or a config file to keep credentials outside version control.
-* Consider connection pooling or persistent connections for production use.
-* Log queries (e.g. via a queryLog() method) to help debugging.
-* Extend support for more drivers (PostgreSQL, SQL Server, etc.) by implementing new driver classes that adhere to IDatabase.
+- Validate table & column names (e.g. alphanumeric + underscores) to avoid SQL injection risks.
+- Use environment variables or a config file to keep credentials outside version control.
+- Consider connection pooling or persistent connections for production use.
+- Log queries (e.g. via a queryLog() method) to help debugging.
+- Extend support for more drivers (PostgreSQL, SQL Server, etc.) by implementing new driver classes that adhere to IDatabase.
 
 ## 📜 License
 
@@ -186,12 +190,12 @@ This project is licensed under the MIT License — see the LICENSE file for deta
 
 Contributions, issues, and feature requests are welcome! Please feel free to:
 
-* Open a bug report or feature request
-* Submit pull requests
-* Add tests for new features or drivers
+- Open a bug report or feature request
+- Submit pull requests
+- Add tests for new features or drivers
 
 ## 🧷 References & Inspiration
 
-* CodeIgniter 3’s Model / Database pattern
-* Laravel’s Eloquent / DB facade design
-* Doctrine / other ORMs as inspiration for future expansion
+- CodeIgniter 3’s Model / Database pattern
+- Laravel’s Eloquent / DB facade design
+- Doctrine / other ORMs as inspiration for future expansion
