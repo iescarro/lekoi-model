@@ -8,11 +8,25 @@ class DB
 {
     static $db;
 
-    static function init($config)
+    public static function instance(): IDatabase
     {
+        if (!self::$db) {
+            throw new \Exception("Database not initialized. Call DB::init() first.");
+        }
+        return self::$db;
+    }
+
+    public static function init($config)
+    {
+        if (self::$db) return;
         switch ($config['driver']) {
-            case 'mysql':
-                self::$db = new MySQLDatabase($config['host'], $config['username'], $config['password'], $config['dbname']);
+            case 'mysqli':
+                self::$db = new MySQLDatabase(
+                    $config['host'],
+                    $config['username'],
+                    $config['password'],
+                    $config['dbname']
+                );
                 break;
             case 'sqlite3':
                 self::$db = new SQLiteDatabase($config['dbname']);
@@ -22,23 +36,52 @@ class DB
         }
     }
 
-    static function insert(string $table, array $data): bool
+    private static function ensure_init()
     {
+        if (!self::$db) {
+            self::init([
+                'driver'   => getenv('DB_CONNECTION') ?: 'sqlite3',
+                'host'     => getenv('DB_HOST'),
+                'dbname'   => getenv('DB_DATABASE'),
+                'username' => getenv('DB_USERNAME'),
+                'password' => getenv('DB_PASSWORD'),
+            ]);
+        }
+    }
+
+    public static function insert(string $table, array $data): bool
+    {
+        self::ensure_init();
         return self::$db->insert($table, $data);
     }
 
-    static function get(string $table_name, ?array $where_clause = null): IDatabase
+    public static function update(string $table, array $data, array $where_clause): bool
     {
+        self::ensure_init();
+        return self::$db->update($table, $data, $where_clause);
+    }
+
+    public static function delete(string $table, array $where_clause): bool
+    {
+        self::ensure_init();
+        return self::$db->delete($table, $where_clause);
+    }
+
+    public static function get(string $table_name, ?array $where_clause = null): IDatabase
+    {
+        self::ensure_init();
         return self::$db->get($table_name, $where_clause);
     }
 
-    static function row(): array
+    public static function row(): array
     {
+        self::ensure_init();
         return self::$db->row();
     }
 
-    static function result(): array
+    public static function result(): array
     {
+        self::ensure_init();
         return self::$db->result();
     }
 }

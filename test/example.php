@@ -8,8 +8,12 @@ use Lekoi\DB;
 use Lekoi\Model;
 
 DB::init([
-    'driver' => getenv('DB_CONNECTION'),
-    'dbname' => getenv('DB_DATABASE')
+    'driver' => 'mysqli', //getenv('DB_CONNECTION'),
+    'host' => getenv('DB_HOST'),
+    'port' => getenv('DB_PORT'),
+    'dbname' => getenv('DB_DATABASE'),
+    'username' => getenv('DB_USERNAME'),
+    'password' => getenv('DB_PASSWORD')
 ]);
 
 class Product extends Model
@@ -43,8 +47,15 @@ class Product extends Model
 
 $product = new Product();
 $product->save(['title' => 'ASDF', 'price' => rand(15, 50)]);
-$product->update(['title' => 'QWERTY'], 8);
-$product->delete(1);
+
+$o = $product->read(17);
+var_dump($o);
+
+$product->update(['title' => 'QWERTY'], 7);
+$product->delete(2);
+
+DB::delete('products', ['id' => 10]);
+DB::update('products', ['title' => 'Some weird title'], ['id' => 15]);
 
 $products = $product->find_all(); // DB::get('products')->result();
 echo "\n\n";

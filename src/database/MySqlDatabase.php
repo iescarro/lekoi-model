@@ -120,4 +120,56 @@ class MySQLDatabase implements IDatabase
 
         return $stmt->execute();
     }
+
+    public function update(string $table, array $data, array $where_clause): bool
+    {
+        if (empty($data) || empty($where_clause)) {
+            throw new \InvalidArgumentException(
+                "UPDATE requires both data and WHERE clause for safety."
+            );
+        }
+
+        // Build SET clause
+        $set_parts = [];
+        $values = [];
+        $types = '';
+
+        foreach ($data as $column => $value) {
+            $set_parts[] = "`{$column}` = ?";
+            $values[] = $value;
+            $types .= is_int($value) ? 'i' : (is_float($value) ? 'd' : 's');
+        }
+
+        // Build WHERE clause
+        $where_parts = [];
+        foreach ($where_clause as $column => $value) {
+            $where_parts[] = "`{$column}` = ?";
+            $values[] = $value;
+            $types .= is_int($value) ? 'i' : (is_float($value) ? 'd' : 's');
+        }
+
+        $sql = "UPDATE `{$table}` SET " . implode(', ', $set_parts)
+            . " WHERE " . implode(' AND ', $where_parts);
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new \Exception("MySQL prepare error: " . $this->conn->error);
+        }
+
+        // Bind parameters dynamically
+        $stmt->bind_param($types, ...$values);
+
+        $success = $stmt->execute();
+
+        if (!$success) {
+            throw new \Exception("MySQL execute error: " . $stmt->error);
+        }
+
+        $affected = $stmt->affected_rows;
+
+        $stmt->close();
+
+        return $affected > 0;
+    }
 }
