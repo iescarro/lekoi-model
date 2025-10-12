@@ -1,0 +1,20 @@
+{
+  "name": "iescarro/lekoi-model",
+  "autoload": {
+    "psr-4": {
+      "Lekoi\\": [
+        "src/",
+        "src/database/"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "Ian",
+      "email": "ian.escarro@gmail.com"
+    }
+  ],
+  "require": {
+    "iescarro/php-util": "^0.1.6"
+  }
+}
