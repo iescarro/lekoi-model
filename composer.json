@@ -1,20 +1,32 @@
 {
   "name": "iescarro/lekoi-model",
-  "autoload": {
-    "psr-4": {
-      "Lekoi\\": [
-        "src/",
-        "src/database/"
-      ]
-    }
-  },
+  "description": "A lightweight ORM and database abstraction layer for the Lekoi PHP framework.",
+  "license": "MIT",
+  "keywords": [
+    "orm",
+    "database",
+    "mysqli",
+    "sqlite",
+    "lekoi",
+    "php",
+    "framework"
+  ],
+  "homepage": "https://github.com/iescarro/lekoi-model",
   "authors": [
     {
       "name": "Ian",
       "email": "ian.escarro@gmail.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "Lekoi\\": [
+        "src/"
+      ]
+    }
+  },
   "require": {
+    "php": ">=8.1",
     "iescarro/php-util": "^0.1.6"
   }
 }
