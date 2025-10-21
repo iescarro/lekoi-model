@@ -49,7 +49,7 @@ lekoi-model/
 
 ## 🧰 Usage
 
-1. Configure DB Facade
+### 1. Configure DB Facade
 
 Before using DB, initialize it with your connection settings (e.g. in your app’s bootstrap or index.php):
 
@@ -73,7 +73,7 @@ DB::init([
 ]);
 ```
 
-2. CRUD Examples
+### 2. CRUD Examples
 
 ```php
 // Insert
@@ -83,11 +83,11 @@ DB::insert('users', [
 ]);
 
 // Update
-DB::update('users', [
-    'email' => 'alice.new@example.com'
-], [
-    'id' => 1
-]);
+DB::update(
+    'users',
+    ['email' => 'alice.new@example.com'],
+    ['id' => 1]
+);
 
 // Delete
 DB::delete('users', [
