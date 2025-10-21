@@ -100,9 +100,9 @@ class SQLiteDatabase implements IDatabase
         return $data;
     }
 
-    public function row_array(): array
+    public function row_array()
     {
-        $data = [];
+        $data = null;
         if ($this->result) {
             // The SQLITE3_ASSOC flag ensures the result is an associative array.
             if ($row = $this->result->fetchArray(SQLITE3_ASSOC)) {
@@ -113,9 +113,10 @@ class SQLiteDatabase implements IDatabase
         return $data;
     }
 
-    public function row(): object
+    public function row(): ?object
     {
-        return (object)$this->row_array();
+        $row = $this->row_array();
+        return $row ? (object)$row : null;
     }
 
     public function insert(string $table, array $data): bool

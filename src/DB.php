@@ -92,6 +92,6 @@ interface IDatabase
     public function insert(string $table, array $data): bool;
     public function update(string $table, array $data, array $where_clause): bool;
     public function get(string $table_name, ?array $where_clause = null): IDatabase;
-    public function row(): object;
+    public function row(): ?object;
     public function result(): array;
 }

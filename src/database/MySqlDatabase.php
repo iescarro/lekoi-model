@@ -115,21 +115,22 @@ class MySQLDatabase implements IDatabase
         return $data;
     }
 
-    public function row_array(): array
+    public function row_array()
     {
-        $data = [];
+        $data = null;
         if ($this->result) {
             if ($row = $this->result->fetch_assoc()) {
-                $data[] = $row;
+                $data = $row;
             }
         }
         $this->stmt->close();
         return $data;
     }
 
-    public function row(): object
+    public function row(): ?object
     {
-        return (object)$this->row_array();
+        $row = $this->row_array();
+        return $row ? (object)$row : null;
     }
 
     public function insert(string $table, array $data): bool
