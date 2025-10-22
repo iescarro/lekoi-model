@@ -21,7 +21,7 @@ class DB
         if (self::$db) return;
         switch ($config['driver']) {
             case 'mysqli':
-                self::$db = new MySQLDatabase(
+                self::$db = new MySqlDatabase(
                     $config['host'],
                     $config['username'],
                     $config['password'],

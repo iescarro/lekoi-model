@@ -2,7 +2,7 @@
 
 namespace Lekoi;
 
-class MySQLDatabase implements IDatabase
+class MySqlDatabase implements IDatabase
 {
     protected $conn;
     private $stmt;
